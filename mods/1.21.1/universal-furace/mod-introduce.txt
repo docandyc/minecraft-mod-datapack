@@ -1,0 +1,260 @@
+Universal Furnace 模组说明文档
+==============================
+
+一、模组基本信息
+----------------
+
+模组名称：Universal Furnace
+模组 ID：universal_furnace
+适用版本：Minecraft Java 1.21.1
+加载器：Minecraft Forge 52.1.0 及以上
+Java 要求：Java 21
+许可证：MIT
+
+项目路径：
+mods/1.21.1/universal-furace/
+
+
+二、功能概述
+------------
+
+Universal Furnace 是一个基于原版熔炉机制扩展的燃料感知型熔炼模组。
+
+原版熔炉只根据输入物品决定产物，燃料通常只提供燃烧时间。本模组的核心功能是让“输入物品”和“燃料物品”共同决定最终输出结果。
+
+核心逻辑：
+
+input + fuel -> output
+
+也就是说，同一种输入物品在搭配不同燃料时，可以熔炼出不同产物。燃料不再只是热量来源，而是配方判断的一部分。
+
+
+三、主要玩法
+------------
+
+1. 玩家把待处理物品放入熔炉输入槽。
+2. 玩家把指定燃料放入燃料槽。
+3. 模组根据 input 和 fuel 的组合查找对应配方。
+4. 如果匹配成功，熔炉开始工作。
+5. 熔炼完成后，同时消耗 1 个输入物品和 1 个燃料物品。
+6. 输出槽生成对应产物。
+
+该机制适合制作大量特殊转换配方，例如：
+
+- 使用不同燃料改变矿石产物
+- 使用高价值材料作为燃料生成后期资源
+- 设计 PvP 或通关后资源刷取路线
+- 扩展原版熔炉成为多条件合成设备
+
+
+四、已实现功能
+--------------
+
+1. 自定义配方类型
+
+模组注册了自定义配方类型：
+
+universal_furnace:fuel_smelting
+
+该配方类型同时读取 input 和 fuel 两个 Ingredient，并生成指定 result。
+
+2. 自定义配方序列化
+
+配方 JSON 可定义：
+
+- input：输入物品
+- fuel：燃料物品
+- result：输出物品
+- cookingtime：熔炼时间
+- experience：经验值
+
+3. 熔炉行为注入
+
+模组通过 Mixin 接入原版 AbstractFurnaceBlockEntity，使原版熔炉可以执行燃料感知熔炼逻辑。
+
+4. 燃料槽兼容
+
+模组允许更多物品作为该系统的燃料参与配方判断。
+
+5. 批量配方支持
+
+项目包含 recipes.json 和 generate_recipes.ps1，用于生成或维护大量 input + fuel -> output 组合。
+
+
+五、配方格式要求
+----------------
+
+单条燃料熔炼配方应遵循以下结构：
+
+{
+  "type": "universal_furnace:fuel_smelting",
+  "input": {
+    "item": "minecraft:example_input"
+  },
+  "fuel": {
+    "item": "minecraft:example_fuel"
+  },
+  "result": {
+    "id": "minecraft:example_output",
+    "count": 1
+  },
+  "experience": 0.0,
+  "cookingtime": 200
+}
+
+要求：
+
+1. type 必须为 universal_furnace:fuel_smelting。
+2. input、fuel 必须是合法的 Minecraft 物品 ID 或 Ingredient。
+3. result.id 必须是合法的输出物品 ID。
+4. cookingtime 必须为正整数。
+5. experience 必须为数字。
+6. 命名空间和资源路径应保持小写，避免空格和特殊字符。
+
+
+六、生成配方的设计要求
+----------------------
+
+生成大量配方时，应遵循以下规则：
+
+1. 产物价值不能低于投入成本
+
+输出物品的稀有度、用途或价值应与 input 和 fuel 的成本匹配。不要让低成本输入轻易换取高价值装备或资源。
+
+2. 燃料必须参与平衡
+
+fuel 不只是燃烧材料，而是配方成本的一部分。高价值输出应要求更高价值、更难获得或更后期的 fuel。
+
+3. 通关后内容优先
+
+本模组更适合服务中后期或通关后的玩法，例如：
+
+- 下界合金相关资源
+- 末地资源
+- PvP 补给
+- 高级药水材料
+- 稀有消耗品
+
+4. 避免破坏早期流程
+
+不要让玩家在早期通过常见方块或普通燃料快速获得钻石、下界合金、附魔金苹果、不死图腾等强力物品。
+
+5. 配方应可解释
+
+input、fuel 和 output 之间最好有直观关系。例如矿物升级、材料精炼、战斗资源合成、维度资源转换等。
+
+6. 批量生成后必须检查重复项
+
+同一组 input + fuel 不应生成多个不同 output，否则会导致配方行为不明确。
+
+
+七、开发环境要求
+----------------
+
+需要安装：
+
+1. Java 21
+2. Git
+3. 支持 Gradle 项目的 IDE，例如 IntelliJ IDEA 或 Eclipse
+4. Minecraft Forge 1.21.1 对应开发环境
+
+项目使用 Gradle Wrapper，构建时优先使用项目内脚本：
+
+Windows：
+gradlew.bat build
+
+Linux / macOS：
+./gradlew build
+
+
+八、目录说明
+------------
+
+主要目录和文件：
+
+build.gradle
+Gradle 构建配置，包含 ForgeGradle、Mixin 和 Java 21 配置。
+
+gradle.properties
+集中定义 Minecraft 版本、Forge 版本、模组 ID、模组名称、作者和描述。
+
+src/main/java/
+模组 Java 源码。
+
+src/main/resources/
+模组资源文件，包括 mods.toml、pack.mcmeta、Mixin 配置和数据文件。
+
+recipes.json
+批量配方数据源或生成结果。
+
+generate_recipes.ps1
+用于生成大量配方的 PowerShell 脚本。
+
+.gradle/
+本地 Gradle 缓存，不应上传 Git。
+
+build/
+构建产物，不应上传 Git。
+
+
+九、Git 上传要求
+----------------
+
+应上传：
+
+- 源码
+- Gradle Wrapper
+- Gradle 配置
+- 模组资源文件
+- 配方 JSON
+- 生成脚本
+- 说明文档
+
+不应上传：
+
+- .codex/
+- .claude/
+- .gradle/
+- build/
+- run/
+- run-data/
+- 日志文件
+- 本地缓存
+
+
+十、测试要求
+------------
+
+每次修改核心逻辑或配方后，应至少检查：
+
+1. Gradle 能否成功构建。
+2. 游戏能否正常启动。
+3. 模组是否被 Forge 正确加载。
+4. 自定义配方 JSON 是否能被数据包系统读取。
+5. 熔炉输入槽、燃料槽、输出槽行为是否符合预期。
+6. 无匹配配方时，熔炉不应异常消耗物品。
+7. 输出槽已有物品时，只有相同物品且未超出堆叠上限才允许继续输出。
+
+
+十一、维护建议
+--------------
+
+1. 新增 MC 版本时，建议按版本建立目录，例如：
+
+mods/1.21.1/universal-furace/
+mods/1.22.x/universal-furace/
+
+2. 修改配方生成逻辑时，应同步更新本说明文档。
+
+3. 如果重命名模组目录，应确保 Git 路径、本地路径和 README 中的路径一致。
+
+4. 如果修改 mod_id，应同步修改：
+
+- gradle.properties
+- mods.toml
+- mixins 配置文件名
+- Java 常量 MOD_ID
+- 数据包命名空间
+
+5. 发布前建议清理 build 和 run 目录后重新构建，确保产物来自当前源码。
+
