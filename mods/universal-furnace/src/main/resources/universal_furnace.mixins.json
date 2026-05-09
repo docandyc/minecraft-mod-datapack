@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.example.universalfurnace.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "universal_furnace.refmap.json",
+  "mixins": [
+    "AbstractFurnaceBlockEntityAccessor",
+    "AbstractFurnaceBlockEntityMixin",
+    "AbstractFurnaceMenuMixin",
+    "FurnaceFuelSlotMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

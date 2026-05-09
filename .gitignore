@@ -1,0 +1,38 @@
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.tmp
+
+# Local assistant / machine settings
+.claude/settings.local.json
+
+# Java / Gradle build output
+**/.gradle/
+**/build/
+**/out/
+**/run/
+**/run-data/
+**/src/generated/
+
+# Logs and crash reports
+*.log
+logs/
+crash-reports/
+hs_err_pid*
+replay_pid*
+
+# Pack/runtime caches
+cache/
+caches/
+downloads/
+versions/
+libraries/
+
+# Archives generated for distribution
+*.zip
+*.tar
+*.tar.gz
+*.7z
