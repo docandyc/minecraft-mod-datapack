@@ -7,7 +7,8 @@ Thumbs.db
 *.tmp
 
 # Local assistant / machine settings
-.claude/settings.local.json
+.codex/
+.claude/
 
 # Java / Gradle build output
 **/.gradle/
